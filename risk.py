@@ -190,7 +190,6 @@ def attacchi_possibili(n):  #funzione che controlla gli stati nemici confinanti 
     print('attacchi_possibili')
     global lista_terr
     lista_terr=''
-    check=True
     contatore=-1
     for i in range(len(territori)):
         for j in range(len(territori[i])):
@@ -199,14 +198,13 @@ def attacchi_possibili(n):  #funzione che controlla gli stati nemici confinanti 
                 for h in range(len(territori_nomi)):
                     indice=h
                     continente=0
+                    check=True
                     for l in range(len(territori)):
                         if indice>=len(territori[l]) and check:
                             indice-=len(territori[l])
                             continente+=1
                         else:
                             check=False
-                        print("contatore\th\tcontinente\tindice\tl\tlen(territori[l])")
-                        print(contatore,"\t\t",h,"\t",continente,"\t\t",indice,"\t",l,"\t",len(territori[l]))
                     if confini[contatore][h]==1 and territori[continente][indice]!=n and truppe_terr[contatore]>1 and (territori_nomi[h] not in lista_terr):
                         lista_terr+=('\n'+territori_nomi[h]+'\t'+str(truppe_terr[h]))
     return lista_terr
