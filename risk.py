@@ -97,14 +97,14 @@ carta_territorio=False
 tris_cont=0
 truppe_tris=0
 
-def ordine_turni(): #crea casualmente un ordine tra i giocatori
+def ordine_turni(): #creates a random order among the players
     print('ordine_turni')
     global order
     t = int(time.time()*1000.0)
     random.seed(((t & 0xff000000)>>24)+((t & 0x00ff0000)>>8)+((t & 0x0000ff00)<<8)+((t & 0x000000ff)<<24))
     random.shuffle(order)
 
-def dividi_territori(): #divide casualmente i vari territori tra i giocatori
+def dividi_territori(): #divides randomly the territories among the players
     print('dividi_territori')
     global terr
     terr=((len(territori_nomi)-1)//len(idlist)+1)*order
@@ -119,7 +119,7 @@ def dividi_territori(): #divide casualmente i vari territori tra i giocatori
         for j in range(len(territori[i])):
             territori[i][j]=terr[territori[i][j]]
 
-def territori_posseduti(n):   #crea una lista per mandare un messaggio ad ogni giocatore con i propri territori
+def territori_posseduti(n):   #creates a list with all the territories owned by player n
     global territori
     print('territori_posseduti')
     global lista_terr
@@ -145,7 +145,7 @@ def colora():   #colora e invia la mappa
     print('colora')
     global mask
     global idlist
-    im=Image.open('plancia.tif')
+    im=Image.open('world.tif')
     im=im.convert('RGBA')
     data=np.array(im)
     rgb=data[:,:,:3]
