@@ -132,7 +132,7 @@ def territori_posseduti(n):   #creates a list with all the territories owned by 
                 lista_terr+=('\n '+territories_nomi[contatore]+'\t'+str(truppe_terr[contatore]))
     return lista_terr
 
-def num_terr_poss(n):   #determina il numero dei territori del giocatore n
+def num_terr_poss(n):   #returns the number of territories ownes by player n
     print('num_terr_poss')
     cont=0
     for i in range(len(territories)):
@@ -141,7 +141,7 @@ def num_terr_poss(n):   #determina il numero dei territori del giocatore n
                 cont+=1
     return cont
 
-def colora():   #colora e invia la mappa
+def colora():   #colours and sends the map
     print('colora')
     global mask
     global idlist
@@ -158,7 +158,7 @@ def colora():   #colora e invia la mappa
             contatore+=1
     im=Image.fromarray(data)
     im=im.convert('RGB')
-    for i in range(len(truppe_terr)):   #scrive il numero di truppe sui vari stati
+    for i in range(len(truppe_terr)):   #writes the number of troops of each territory
         j=0
         while 10**j<=truppe_terr[i]:
             cifra=(truppe_terr[i]//(10**j))%10
@@ -170,7 +170,7 @@ def colora():   #colora e invia la mappa
         f.seek(0)
         bot.sendPhoto(idlist[i],f)
 
-def nuove_truppe(n):    #nuove truppe
+def nuove_truppe(n):    #calculates the number of new troops of player n
     print('nuove_truppe')
     global truppe_tris
     truppe=truppe_tris
