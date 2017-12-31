@@ -12,7 +12,7 @@ namelist=[]
 order=[]
 territories=[[0,1,2,3,4,5,6,7,8],[9,10,11,12],[13,14,15,16,17,18,19],[20,21,22,23,24,25],[26,27,28,29,30,31,32,33,34,35,36,37],[38,39,40,41]]
 #North America, South America, Europe, Africa, Asia, Oceania
-confini=[[0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0], #Alaska
+borders=[[0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0], #Alaska
          [1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], #Northwest_Territory
          [0,1,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], #Greenland
          [1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], #Alberta
@@ -280,7 +280,7 @@ def attacchi_possibili(n):  #funzione che controlla gli stati nemici confinanti 
                             continente+=1
                         else:
                             check=False
-                    if confini[contatore][h]==1 and territories[continente][indice]!=n and truppe_terr[contatore]>1 and (territori_nomies[h] not in lista_terr):
+                    if borders[contatore][h]==1 and territories[continente][indice]!=n and truppe_terr[contatore]>1 and (territori_nomies[h] not in lista_terr):
                         lista_terr+=('\n'+territories_nomi[h]+'\t'+str(truppe_terr[h]))
     return lista_terr
 
@@ -457,7 +457,7 @@ def on_chat_message(msg):
             params=txt.split()[1:]
             if len(params)==3:
                 if params[0] in territori_posseduti(order.index(prossimo_giocatore)):
-                    if confini[territori_nomi.index(params[0])][territori_nomi.index(params[1])]==1:
+                    if borders[territori_nomi.index(params[0])][territori_nomi.index(params[1])]==1:
                         if int(params[2])<truppe_terr[territori_nomi.index(params[0])]:
                             truppe_attacco=int(params[2])
                             truppe_terr[territories_nomi.index(params[0])]-=truppe_attacco
@@ -515,7 +515,7 @@ def on_chat_message(msg):
                 if params[0] in territori_posseduti(order.index(prossimo_giocatore)):
                     if params[1] in territori_posseduti(order.index(prossimo_giocatore)):
                         if int(params[2])<truppe_terr[territories_nomi.index(params[1])]:
-                            if confini[territories_nomi.index(params[0])][territories_nomi.index(params[1])]==1:
+                            if borders[territories_nomi.index(params[0])][territories_nomi.index(params[1])]==1:
                                 truppe_terr[territories_nomi.index(params[0])]-=params[2]
                                 truppe_terr[territories_nomi.index(params[1])]+=params[2]
                                 colora()
