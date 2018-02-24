@@ -317,7 +317,7 @@ def attacco():  #funzione che gestisce l'attacco
 def spostamento():  #funzione che gestisce lo spostamento
     print('spostamento')
     bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Hai la seguente situazione:'+territori_posseduti(order.index(prossimo_giocatore)))
-    bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Sposta scrivendo "Sposta" e il nome dello stato di partenza, il nome dello stato di arrivo e il numero di truppe che vuoi spostare, oppure "Fine" per terminare il turno')
+    bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Sposta scrivendo "Move" e il nome dello stato di partenza, il nome dello stato di arrivo e il numero di truppe che vuoi spostare, oppure "Fine" per terminare il turno')
 
 def lancio_dadi(n,m):   #funzione che determina l'esito di un attacco
     print('lancio_dadi')
@@ -509,7 +509,7 @@ def on_chat_message(msg):
                     attacco()
         elif txt.startswith('Spostamento') and idlist[order.index(prossimo_giocatore)]==chat_id:
             spostamento()
-        elif txt.startswith('Sposta') and idlist[order.index(prossimo_giocatore)]==chat_id:
+        elif txt.startswith('Move') and idlist[order.index(prossimo_giocatore)]==chat_id:
             params=txt.split()[1:]
             if len(params)==3:
                 if params[0] in territori_posseduti(order.index(prossimo_giocatore)):
@@ -525,7 +525,7 @@ def on_chat_message(msg):
             prossimo_giocatore=(prossimo_giocatore+1)%len(idlist)
             tris()
 
-def on_callback_query(msg): #aziona i vari LED in base al pulsante toccato
+def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
     print('Callback Query:', query_id, from_id, query_data)
 
@@ -538,12 +538,12 @@ def on_callback_query(msg): #aziona i vari LED in base al pulsante toccato
         dividi_territori()
         global truppe_disponibili
         for i in range(len(idlist)):
-            bot.sendMessage(idlist[i], 'Lancio dei dadi per decidere chi inizia...\nSei il giocatore n.{}'.format(order[i]+1))
-            bot.sendMessage(idlist[i], 'Hai i seguenti territori:'+territori_posseduti(i)+'\nE questo obiettivo: '+obiettivi(idlist[i]))
+            bot.sendMessage(idlist[i], 'Lancio dei dadi per decidere chi inizia...\nYou\'re the player n.{}'.format(order[i]+1))
+            bot.sendMessage(idlist[i], 'You have the following territories:'+territori_posseduti(i)+'\nAnd this goal: '+obiettivi(idlist[i]))
             bot.sendMessage(idlist[i], 'Hai a disposizione {} truppe, disponile nei tuoi territori scrivendo "Posiziona x1 x2 x3 ..." con x1, x2, x3, ... il numero di truppe da mettere in ogni territorio'.format(50-5*len(idlist)))
         colora()
 
-bot=telepot.Bot('*Insert your token here*')
+bot=telepot.Bot('*INSERT YOUR TOKEN HERE*')
 bot.message_loop({'chat': on_chat_message,'callback_query': on_callback_query})
 print ('Listening ...')
 
