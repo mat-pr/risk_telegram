@@ -194,18 +194,18 @@ def nuove_truppe(n):    #calculates the number of new troops of player n
         truppe+=2
     return truppe
 
-def dividi_obiettivi(): #permuta gli obiettivi
+def dividi_obiettivi(): #permutation of goals
     print('dividi_obiettivi')
     global obiettivi_posseduti
     t = int(time.time()*1000.0)
     random.seed(((t & 0xff000000)>>24)+((t & 0x00ff0000)>>8)+((t & 0x0000ff00)<<8)+((t & 0x000000ff)<<24))
     random.shuffle(obiettivi_posseduti)
 
-def obiettivi(n):   #ritorna l'obiettivo del giocatore n
+def obiettivi(n):   #returns the nth player's goal
     print('obiettivi')
     return obiettivi_testo[obiettivi_posseduti[idlist.index(n)]]
 
-def vivo(n):    #controlla se il giocatore è ancora vivo
+def vivo(n):    #check if the player is already alive
     print('vivo')
     vivo_temp=False
     for i in range(len(territories)):
@@ -213,7 +213,7 @@ def vivo(n):    #controlla se il giocatore è ancora vivo
             vivo_temp=True
     return vivo_temp
 
-def mischia_tris(): #mischia il mazzo delle carte teriitorio
+def mischia_tris(): #mischia il mazzo delle carte territorio
     print('mischia_tris')
     global tris_num
     tris_scambio=[]
