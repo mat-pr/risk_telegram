@@ -54,14 +54,14 @@ borders=[[0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1], #New_Guinea
          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1], #Eastern_Australia
          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0]] #Western_Australia
-territories_nomi=['Alaska','Northwest_Territory','Greenland','Alberta','Ontario','Quebec','Western_United_States','Eastern_United_States',
+territories_names=['Alaska','Northwest_Territory','Greenland','Alberta','Ontario','Quebec','Western_United_States','Eastern_United_States',
     'Central_America','Venezuela','Peru','Brasil','Argentina','Iceland','Scandinavia','Great_Britain','Northern_Europe','Western_Europe',
     'Southern_Europe','Ukraine','North_Africa','Egypt','Congo','East_Africa','South_Africa','Madagascar','Ural','Siberia','Yakutsk',
     'Irkutsk','Kamchatka','Japan','Mongolia','Afghanistan','Middle_East','India','China','Siam','Indonesia','Nuova_Guinea',
     'Eastern_Australia','Western_Australia']
 terr=[]
-lista_terr=''
-aspetta=True
+terr_list=''
+wait=True
 truppe_terr=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 truppe_disponibili=0
 obiettivi_testo=['Presidia 18 territori con almeno due truppe ciascuno','Conquista 24 territori','Conquista Nord America e Africa',
@@ -72,7 +72,7 @@ preparativi=True
 prossimo_giocatore=0
 mask=[]
 colori_terr=[]
-for i in range(len(territories_nomi)):
+for i in range(len(territories_names)):
     colori_terr.append([i,255,255])
 colori_players=[[0,255,0,255],[255,0,0,255],[0,0,255,255],[255,0,255,255],[255,255,0,255],[255,128,0,255]]
 cifra0=Image.open('0.tif')
@@ -107,12 +107,12 @@ def ordine_turni(): #creates a random order among the players
 def dividi_territori(): #divides randomly the territories among the players
     print('dividi_territori')
     global terr
-    terr=((len(territories_nomi)-1)//len(idlist)+1)*order
+    terr=((len(territories_names)-1)//len(idlist)+1)*order
     t = int(time.time()*1000.0)
     random.seed(((t & 0xff000000)>>24)+((t & 0x00ff0000)>>8)+((t & 0x0000ff00)<<8)+((t & 0x000000ff)<<24))
     random.shuffle(terr)
     terr.reverse()
-    for i in range(len(terr)-len(territories_nomi)):
+    for i in range(len(terr)-len(territories_names)):
         terr.remove(len(idlist)-i-1)
     terr.reverse
     for i in range(len(territories)):
@@ -122,15 +122,15 @@ def dividi_territori(): #divides randomly the territories among the players
 def territori_posseduti(n):   #creates a list with all the territories owned by player n
     global territories
     print('territori_posseduti')
-    global lista_terr
-    lista_terr=''
-    contatore=-1
+    global terr_list
+    terr_list=''
+    counter=-1
     for i in range(len(territories)):
         for j in range(len(territories[i])):
-            contatore+=1
+            counter+=1
             if territories[i][j]==n:
-                lista_terr+=('\n '+territories_nomi[contatore]+'\t'+str(truppe_terr[contatore]))
-    return lista_terr
+                terr_list+=('\n '+territories_names[counter]+'\t'+str(truppe_terr[counter]))
+    return terr_list
 
 def num_terr_poss(n):   #returns the number of territories ownes by player n
     print('num_terr_poss')
@@ -149,13 +149,13 @@ def colora():   #colours and sends the map
     im=im.convert('RGBA')
     data=np.array(im)
     rgb=data[:,:,:3]
-    for i in range(len(territories_nomi)):
+    for i in range(len(territories_names)):
         mask.append(np.all(rgb==colori_terr[i],axis=-1))
-    contatore=0
+    counter=0
     for i in range(len(territories)):
         for j in range(len(territories[i])):
-            data[mask[contatore]]=colori_players[territories[i][j]]
-            contatore+=1
+            data[mask[counter]]=colori_players[territories[i][j]]
+            counter+=1
     im=Image.fromarray(data)
     im=im.convert('RGB')
     for i in range(len(truppe_terr)):   #writes the number of troops of each territory
@@ -240,7 +240,7 @@ def tris_posseduti(n):
     lista_tris=''
     for i in range(len(tris_usati)):
         if tris_usati[i]==n:
-            lista_string+=('\n'+territori_nomi[tris_num[i]+' '+tris[tris_num[i]]])
+            lista_string+=('\n'+territori_names[tris_num[i]+' '+tris[tris_num[i]]])
     return lista_tris
 
 def tris():
@@ -263,14 +263,14 @@ def rinforzo():    #funzione che gestisce il rinforzo
 
 def attacchi_possibili(n):  #funzione che controlla gli stati nemici confinanti che si possono attaccare
     print('attacchi_possibili')
-    global lista_terr
-    lista_terr=''
-    contatore=-1
+    global terr_list
+    terr_list=''
+    counter=-1
     for i in range(len(territories)):
         for j in range(len(territories[i])):
-            contatore+=1
+            counter+=1
             if territories[i][j]==n:
-                for h in range(len(territories_nomi)):
+                for h in range(len(territories_names)):
                     indice=h
                     continente=0
                     check=True
@@ -280,18 +280,18 @@ def attacchi_possibili(n):  #funzione che controlla gli stati nemici confinanti 
                             continente+=1
                         else:
                             check=False
-                    if borders[contatore][h]==1 and territories[continente][indice]!=n and truppe_terr[contatore]>1 and (territori_nomies[h] not in lista_terr):
-                        lista_terr+=('\n'+territories_nomi[h]+'\t'+str(truppe_terr[h]))
-    return lista_terr
+                    if borders[counter][h]==1 and territories[continente][indice]!=n and truppe_terr[counter]>1 and (territori_nameses[h] not in terr_list):
+                        terr_list+=('\n'+territories_names[h]+'\t'+str(truppe_terr[h]))
+    return terr_list
 
 def  obiettivo_raggiunto(n):    #controlla se il giocatore n ha raggiunto il suo obiettivo
     print('obiettivo_raggiunto')
     if obiettivi_posseduti[n]==0:
-        for i in range(len(territories_nomi)):
-            contatore=0
+        for i in range(len(territories_names)):
+            counter=0
             if terr[i]==n and truppe_terr[i]>=2:
-                contatore+=1
-        return contatore>=18
+                counter+=1
+        return counter>=18
     elif obiettivi_posseduti[n]==1:
         return terr.count(n)>=24
     elif obiettivi_posseduti[n]==2:
@@ -348,7 +348,7 @@ def on_chat_message(msg):
         global idlist
         global truppe_terr
         global carta_territorio
-        if txt.startswith('/start') and aspetta:
+        if txt.startswith('/start') and wait:
             nuovo=True
             for i in range(len(idlist)):
                 if chat_id == idlist[i]:
@@ -398,25 +398,25 @@ def on_chat_message(msg):
                 bot.sendMessage(chat_id,'Non hai inserito tre carte')
             else:
                 for i in range(3):
-                    if params[i] not in territories_nomi:
+                    if params[i] not in territories_names:
                         check=False
                 if not check:
-                    bot.sendMessage(chat_id,'I nomi delle carte sono errati')
+                    bot.sendMessage(chat_id,'I names delle carte sono errati')
                 else:
                     for i in range(3):
-                        if tris_usati[territories_nomi.index(params[i])]!=prossimo_giocatore:
+                        if tris_usati[territories_names.index(params[i])]!=prossimo_giocatore:
                             check=False
                     if not check:
                         bot.sendMessage(chat_id,'Hai inserito carte che non ti appartengono')
                     else:
-                        if tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='cannone' or (tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='cannone' and tris[territories_nomi.index(params[0])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[2])]=='canone' and tris[territories_nomi.index(params[1])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]=='cannone' and tris[territories_nomi.index(params[2])]=='jolly'):
+                        if tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='cannone' or (tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='cannone' and tris[territories_names.index(params[0])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[2])]=='canone' and tris[territories_names.index(params[1])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]=='cannone' and tris[territories_names.index(params[2])]=='jolly'):
                             truppe_tris=4
-                        elif tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='fante' or (tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='fante' and tris[territories_nomi.index(params[0])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[2])]=='fante' and tris[territories_nomi.index(params[1])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]=='fante' and tris[territories_nomi.index(params[2])]=='jolly'):
+                        elif tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='fante' or (tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='fante' and tris[territories_names.index(params[0])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[2])]=='fante' and tris[territories_names.index(params[1])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]=='fante' and tris[territories_names.index(params[2])]=='jolly'):
                             truppe_tris=6
-                        elif tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='cavallo' or (tris[territories_nomi.index(params[1])]==tris[territories_nomi.index(params[2])]=='cavallo' and tris[territories_nomi.index(params[0])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[2])]=='cavallo' and tris[territories_nomi.index(params[1])]=='jolly') or (tris[territories_nomi.index(params[0])]==tris[territories_nomi.index(params[1])]=='cavallo' and tris[territories_nomi.index(params[2])]=='jolly'):
+                        elif tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='cavallo' or (tris[territories_names.index(params[1])]==tris[territories_names.index(params[2])]=='cavallo' and tris[territories_names.index(params[0])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[2])]=='cavallo' and tris[territories_names.index(params[1])]=='jolly') or (tris[territories_names.index(params[0])]==tris[territories_names.index(params[1])]=='cavallo' and tris[territories_names.index(params[2])]=='jolly'):
                             truppe_tris=8
                         for i in range(3):
-                            indice=territories_nomi.index(params[i])
+                            indice=territories_names.index(params[i])
                             check=True
                             for l in range(len(territories)):
                                 if indice>=len(territories[l]) and check:
@@ -425,7 +425,7 @@ def on_chat_message(msg):
                                 else:
                                     check=False
                             if territories[continente][indice]==prossimo_giocatore:
-                                truppe_terr[territori_nomi.index(params[i])]+=2
+                                truppe_terr[territori_names.index(params[i])]+=2
                     rinforzo()
         elif txt.startswith('Rinforzo') and idlist[order.index(prossimo_giocatore)]==chat_id:
             params=txt.split()[1:]
@@ -457,26 +457,26 @@ def on_chat_message(msg):
             params=txt.split()[1:]
             if len(params)==3:
                 if params[0] in territori_posseduti(order.index(prossimo_giocatore)):
-                    if borders[territori_nomi.index(params[0])][territori_nomi.index(params[1])]==1:
-                        if int(params[2])<truppe_terr[territori_nomi.index(params[0])]:
+                    if borders[territori_names.index(params[0])][territori_names.index(params[1])]==1:
+                        if int(params[2])<truppe_terr[territori_names.index(params[0])]:
                             truppe_attacco=int(params[2])
-                            truppe_terr[territories_nomi.index(params[0])]-=truppe_attacco
-                            while truppe_attacco>0 and truppe_terr[territories_nomi.index(params[1])]>0:
+                            truppe_terr[territories_names.index(params[0])]-=truppe_attacco
+                            while truppe_attacco>0 and truppe_terr[territories_names.index(params[1])]>0:
                                 if truppe_attacco>3:
-                                    if truppe_terr[territories_nomi.index(params[1])]>3:
+                                    if truppe_terr[territories_names.index(params[1])]>3:
                                         res=lancio_dadi(3,3)
                                     else:
-                                        res=lancio_dadi(3,truppe_terr[territories_nomi.index(params[1])])
+                                        res=lancio_dadi(3,truppe_terr[territories_names.index(params[1])])
                                 else:
-                                    if truppe_terr[territories_nomi.index(params[1])]>3:
+                                    if truppe_terr[territories_names.index(params[1])]>3:
                                         res=lancio_dadi(truppe_attacco,3)
                                     else:
-                                        res=lancio_dadi(truppe_attacco,truppe_terr[territories_nomi.index(params[1])])
+                                        res=lancio_dadi(truppe_attacco,truppe_terr[territories_names.index(params[1])])
                                 truppe_attacco-=res[0]
-                                truppe_terr[territories_nomi.index(params[1])]-=res[1]
-                            if truppe_terr[territories_nomi.index(params[1])]<1:
-                                truppe_terr[territories_nomi.index(params[1])]=truppe_attacco
-                                indice=territories_nomi.index(params[1])
+                                truppe_terr[territories_names.index(params[1])]-=res[1]
+                            if truppe_terr[territories_names.index(params[1])]<1:
+                                truppe_terr[territories_names.index(params[1])]=truppe_attacco
+                                indice=territories_names.index(params[1])
                                 continente=0
                                 for i in range(len(territories)):
                                     if indice>=len(territories[i]):
@@ -486,7 +486,7 @@ def on_chat_message(msg):
                                 if carta_territorio==False:
                                     while tris_usati[tris_cont]!=-1:
                                         tris_cont=(tris_cont+1)%len(tris_num)
-                                    bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Hai la nuova carta territorio '+territories_nomi[tris_num[tris_cont]]+' '+tris[tris_num[tris_cont]])
+                                    bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Hai la nuova carta territorio '+territories_names[tris_num[tris_cont]]+' '+tris[tris_num[tris_cont]])
                                     tris_usati[tris_num[tris_cont]]=order.index(prossimo_giocatore)
                                     carta_territorio=True
                                 colora()
@@ -514,10 +514,10 @@ def on_chat_message(msg):
             if len(params)==3:
                 if params[0] in territori_posseduti(order.index(prossimo_giocatore)):
                     if params[1] in territori_posseduti(order.index(prossimo_giocatore)):
-                        if int(params[2])<truppe_terr[territories_nomi.index(params[1])]:
-                            if borders[territories_nomi.index(params[0])][territories_nomi.index(params[1])]==1:
-                                truppe_terr[territories_nomi.index(params[0])]-=params[2]
-                                truppe_terr[territories_nomi.index(params[1])]+=params[2]
+                        if int(params[2])<truppe_terr[territories_names.index(params[1])]:
+                            if borders[territories_names.index(params[0])][territories_names.index(params[1])]==1:
+                                truppe_terr[territories_names.index(params[0])]-=params[2]
+                                truppe_terr[territories_names.index(params[1])]+=params[2]
                                 colora()
                                 prossimo_giocatore=(prossimo_giocatore+1)%len(idlist)
                                 rinforzo()
@@ -529,9 +529,9 @@ def on_callback_query(msg): #aziona i vari LED in base al pulsante toccato
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
     print('Callback Query:', query_id, from_id, query_data)
 
-    global aspetta
-    if query_data == '/inizio' and aspetta:
-        aspetta = False
+    global wait
+    if query_data == '/inizio' and wait:
+        wait = False
         global idlist
         global order
         ordine_turni()
@@ -543,7 +543,7 @@ def on_callback_query(msg): #aziona i vari LED in base al pulsante toccato
             bot.sendMessage(idlist[i], 'Hai a disposizione {} truppe, disponile nei tuoi territori scrivendo "Posiziona x1 x2 x3 ..." con x1, x2, x3, ... il numero di truppe da mettere in ogni territorio'.format(50-5*len(idlist)))
         colora()
 
-bot=telepot.Bot('375366784:AAHWLS1OBuBQZaa4PGCTx-5uQVcsaLgm3KM')
+bot=telepot.Bot('*Insert your token here*')
 bot.message_loop({'chat': on_chat_message,'callback_query': on_callback_query})
 print ('Listening ...')
 
