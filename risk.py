@@ -216,6 +216,7 @@ def vivo(n):    #check if the player is already alive
 def mischia_tris(): #mischia il mazzo delle carte territorio
     print('mischia_tris')
     global tris_num
+    global tris_usati
     tris_scambio=[]
     tris_provvisorio=[]
     for i in range(len(tris_num)):
@@ -245,6 +246,7 @@ def tris_posseduti(n):
 
 def tris():
     print('tris')
+    global tris_usati
     if(tris_usati.count(i)>0):
         if vivo(order.index(prossimo_giocatore)):
             bot.sendMessage(idlist[order.index(prossimo_giocatore)], 'Hai le seguenti carte territorio: {}'.format(tris_posseduti(order.index(prossimo_giocatore))))
@@ -340,6 +342,7 @@ def lancio_dadi(n,m):   #funzione che determina l'esito di un attacco
 def on_chat_message(msg):
     global preparativi
     global prossimo_giocatore
+         global tris_usati
     content_type, chat_type, chat_id = telepot.glance(msg)
     print('Contact from ', chat_id)
     if content_type == 'text':
@@ -484,6 +487,7 @@ def on_chat_message(msg):
                                         continente+=1
                                 territories[continente][indice]=order.index(prossimo_giocatore)
                                 if carta_territorio==False:
+                                    global tris_cont
                                     while tris_usati[tris_cont]!=-1:
                                         tris_cont=(tris_cont+1)%len(tris_num)
                                     bot.sendMessage(idlist[order.index(prossimo_giocatore)],'Hai la nuova carta territorio '+territories_names[tris_num[tris_cont]]+' '+tris[tris_num[tris_cont]])
